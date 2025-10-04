@@ -246,7 +246,10 @@
     "windSpeed": "Wind Speed",
     "visibility": "Visibility",
     "pressure": "Pressure",
-    "forecast": "5-Day Forecast"
+    "forecast": "5-Day Forecast",
+    "useMyLocation": "Use My Location",
+    "locationError": "Unable to get your location. Please allow location access.",
+    "fetchingLocation": "Getting your location..."
   },
   "calendar": {
     "title": "Seasonal Crop Calendar",

@@ -110,9 +110,6 @@ const SeasonalCalendar = () => {
               <CardDescription>{t("calendar.kharifDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-3">
-                {t("calendar.kharifMonths")}
-              </p>
               <div className="flex flex-wrap gap-2">
                 {getCropsForSeason('kharif').map((crop) => (
                   <Badge key={crop.id} variant="outline" className="text-blue-700">
@@ -132,9 +129,6 @@ const SeasonalCalendar = () => {
               <CardDescription>{t("calendar.rabiDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-3">
-                {t("calendar.rabiMonths")}
-              </p>
               <div className="flex flex-wrap gap-2">
                 {getCropsForSeason('rabi').map((crop) => (
                   <Badge key={crop.id} variant="outline" className="text-cyan-700">
@@ -154,9 +148,6 @@ const SeasonalCalendar = () => {
               <CardDescription>{t("calendar.summerDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-3">
-                {t("calendar.summerMonths")}
-              </p>
               <div className="flex flex-wrap gap-2">
                 {getCropsForSeason('summer').map((crop) => (
                   <Badge key={crop.id} variant="outline" className="text-yellow-700">

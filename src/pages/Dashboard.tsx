@@ -101,7 +101,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Navigation onSignOut={handleSignOut} />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-12 py-8 max-w-[1600px]">
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -161,18 +161,21 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Weather Widget */}
-        <div className="mb-8">
-          <WeatherWidget location={profile?.district ? `${profile.district},IN` : "Warangal,IN"} />
-        </div>
+        {/* Weather and Profitability Side by Side on Large Screens */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Weather Widget */}
+          <div>
+            <WeatherWidget location={profile?.district ? `${profile.district},IN` : "Warangal,IN"} />
+          </div>
 
-        {/* Profitability Calculator */}
-        <div className="mb-8">
-          <ProfitabilityCalculator />
+          {/* Profitability Calculator */}
+          <div>
+            <ProfitabilityCalculator />
+          </div>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="hover:shadow-elevated transition-shadow cursor-pointer" onClick={() => navigate('/farms')}>
             <CardHeader>
               <CardTitle>{t("dashboard.myFarms")}</CardTitle>

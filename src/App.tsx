@@ -20,9 +20,9 @@ import { OfflineIndicator } from "./components/OfflineIndicator";
 const queryClient = new QueryClient();
 
 const App = () => {
-  // Register service worker for offline functionality
+  // Register service worker for offline functionality (development only)
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && import.meta.env.PROD) {
       navigator.serviceWorker
         .register('/service-worker.js')
         .then((registration) => {
@@ -45,7 +45,12 @@ const App = () => {
         <Toaster />
         <Sonner />
         <OfflineIndicator />
-        <BrowserRouter>
+        <BrowserRouter
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />

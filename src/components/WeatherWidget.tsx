@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Cloud, CloudRain, Sun, Wind, Droplets, Eye, Gauge } from "lucide-react";
+import { Cloud, CloudRain, Sun, Wind, Droplets, Eye, Gauge, MapPin, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 
 interface WeatherData {
@@ -29,15 +30,85 @@ const WeatherWidget = ({ location = "Warangal,IN" }: { location?: string }) => {
   const [forecast, setForecast] = useState<ForecastDay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
+  const [geoLoading, setGeoLoading] = useState(false);
 
-  // OpenWeatherMap API key - In production, this should be in environment variables
+  // OpenWeatherMap API key
   const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY || "demo_key";
 
   useEffect(() => {
     fetchWeather();
-  }, [location]);
+  }, [location, useCurrentLocation]);
+
+  const getUserLocation = () => {
+    setGeoLoading(true);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUseCurrentLocation(true);
+          fetchWeatherByCoords(position.coords.latitude, position.coords.longitude);
+          setGeoLoading(false);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          setError(t("weather.locationError"));
+          setGeoLoading(false);
+        }
+      );
+    } else {
+      setError(t("weather.locationError"));
+      setGeoLoading(false);
+    }
+  };
+
+  const fetchWeatherByCoords = async (lat: number, lon: number) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Fetch current weather by coordinates
+      const currentResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+      );
+
+      if (!currentResponse.ok) {
+        throw new Error("Weather service unavailable");
+      }
+
+      const currentData = await currentResponse.json();
+
+      setWeather({
+        temp: Math.round(currentData.main.temp),
+        feels_like: Math.round(currentData.main.feels_like),
+        humidity: currentData.main.humidity,
+        wind_speed: currentData.wind.speed,
+        visibility: currentData.visibility / 1000,
+        pressure: currentData.main.pressure,
+        description: currentData.weather[0].description,
+        icon: currentData.weather[0].icon,
+        location: currentData.name,
+      });
+
+      // Fetch 5-day forecast by coordinates
+      const forecastResponse = await fetch(
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+      );
+
+      if (forecastResponse.ok) {
+        const forecastData = await forecastResponse.json();
+        processForecastData(forecastData);
+      }
+
+      setLoading(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to fetch weather");
+      setLoading(false);
+    }
+  };
 
   const fetchWeather = async () => {
+    if (useCurrentLocation) return; // Skip if using geolocation
+    
     setLoading(true);
     setError(null);
 
@@ -72,34 +143,7 @@ const WeatherWidget = ({ location = "Warangal,IN" }: { location?: string }) => {
 
       if (forecastResponse.ok) {
         const forecastData = await forecastResponse.json();
-        
-        // Group by day and get daily data
-        const dailyData: Record<string, any> = {};
-        forecastData.list.forEach((item: any) => {
-          const date = new Date(item.dt * 1000).toLocaleDateString();
-          if (!dailyData[date]) {
-            dailyData[date] = {
-              temps: [],
-              descriptions: [],
-              icons: [],
-            };
-          }
-          dailyData[date].temps.push(item.main.temp);
-          dailyData[date].descriptions.push(item.weather[0].description);
-          dailyData[date].icons.push(item.weather[0].icon);
-        });
-
-        const forecastDays: ForecastDay[] = Object.entries(dailyData)
-          .slice(0, 5)
-          .map(([date, data]: [string, any]) => ({
-            date,
-            temp_max: Math.round(Math.max(...data.temps)),
-            temp_min: Math.round(Math.min(...data.temps)),
-            description: data.descriptions[0],
-            icon: data.icons[0],
-          }));
-
-        setForecast(forecastDays);
+        processForecastData(forecastData);
       }
     } catch (err) {
       console.error("Weather fetch error:", err);
@@ -107,6 +151,36 @@ const WeatherWidget = ({ location = "Warangal,IN" }: { location?: string }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const processForecastData = (forecastData: any) => {
+    // Group by day and get daily data
+    const dailyData: Record<string, any> = {};
+    forecastData.list.forEach((item: any) => {
+      const date = new Date(item.dt * 1000).toLocaleDateString();
+      if (!dailyData[date]) {
+        dailyData[date] = {
+          temps: [],
+          descriptions: [],
+          icons: [],
+        };
+      }
+      dailyData[date].temps.push(item.main.temp);
+      dailyData[date].descriptions.push(item.weather[0].description);
+      dailyData[date].icons.push(item.weather[0].icon);
+    });
+
+    const forecastDays: ForecastDay[] = Object.entries(dailyData)
+      .slice(0, 5)
+      .map(([date, data]: [string, any]) => ({
+        date,
+        temp_max: Math.round(Math.max(...data.temps)),
+        temp_min: Math.round(Math.min(...data.temps)),
+        description: data.descriptions[0],
+        icon: data.icons[0],
+      }));
+
+    setForecast(forecastDays);
   };
 
   const getWeatherIcon = (iconCode: string) => {
@@ -157,10 +231,26 @@ const WeatherWidget = ({ location = "Warangal,IN" }: { location?: string }) => {
   return (
     <Card className="col-span-full">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Cloud className="w-5 h-5" />
-          {t("weather.title")} - {weather?.location}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Cloud className="w-5 h-5" />
+            {t("weather.title")} - {weather?.location}
+          </CardTitle>
+          <Button 
+            onClick={getUserLocation} 
+            disabled={geoLoading}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
+            {geoLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <MapPin className="w-4 h-4" />
+            )}
+            {t("weather.useMyLocation")}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         {/* Current Weather */}
