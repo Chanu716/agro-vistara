@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Sprout, Warehouse, TrendingUp, IndianRupee, LogOut, Plus } from "lucide-react";
 import { toast } from "sonner";
 import Navigation from "@/components/Navigation";
+import WeatherWidget from "@/components/WeatherWidget";
+import ProfitabilityCalculator from "@/components/ProfitabilityCalculator";
 import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
@@ -70,7 +72,7 @@ const Dashboard = () => {
       .select('amount')
       .eq('user_id', user.id);
     
-    const totalExpenses = expensesData?.reduce((sum, exp) => sum + Number(exp.amount), 0) || 0;
+    const totalExpenses = expensesData?.reduce((sum: number, exp: { amount: number }) => sum + Number(exp.amount), 0) || 0;
 
     // Fetch expected yield
     const { data: cropsData } = await supabase
@@ -79,7 +81,7 @@ const Dashboard = () => {
       .eq('user_id', user.id)
       .in('status', ['planned', 'growing']);
     
-    const expectedYield = cropsData?.reduce((sum, crop) => sum + Number(crop.expected_yield_kg || 0), 0) || 0;
+    const expectedYield = cropsData?.reduce((sum: number, crop: { expected_yield_kg: number | null }) => sum + Number(crop.expected_yield_kg || 0), 0) || 0;
 
     setStats({
       totalFarms: farmsCount || 0,
@@ -157,6 +159,16 @@ const Dashboard = () => {
               <p className="text-xs text-muted-foreground">{t("dashboard.fromActiveCrops")}</p>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Weather Widget */}
+        <div className="mb-8">
+          <WeatherWidget location={profile?.district ? `${profile.district},IN` : "Warangal,IN"} />
+        </div>
+
+        {/* Profitability Calculator */}
+        <div className="mb-8">
+          <ProfitabilityCalculator />
         </div>
 
         {/* Quick Actions */}

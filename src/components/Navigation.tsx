@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Sprout, LayoutDashboard, Warehouse, TrendingUp, IndianRupee, MapPin, LogOut } from "lucide-react";
+import { Sprout, LayoutDashboard, Warehouse, TrendingUp, IndianRupee, MapPin, LogOut, Calendar, Award, BookOpen } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LanguageSelector from "./LanguageSelector";
+import VoiceAssistant from "./VoiceAssistant";
 
 interface NavigationProps {
   onSignOut: () => void;
@@ -17,6 +18,9 @@ const Navigation = ({ onSignOut }: NavigationProps) => {
     { path: '/dashboard', label: t('nav.dashboard'), icon: LayoutDashboard },
     { path: '/farms', label: t('nav.myFarms'), icon: Sprout },
     { path: '/advisory', label: t('nav.advisory'), icon: TrendingUp },
+    { path: '/calendar', label: t('nav.calendar'), icon: Calendar },
+    { path: '/stories', label: t('nav.stories'), icon: Award },
+    { path: '/guides', label: t('nav.guides'), icon: BookOpen },
     { path: '/expenses', label: t('nav.expenses'), icon: IndianRupee },
     { path: '/storage', label: t('nav.storage'), icon: MapPin },
   ];
@@ -53,6 +57,7 @@ const Navigation = ({ onSignOut }: NavigationProps) => {
           </div>
 
           <div className="flex items-center gap-3">
+            <VoiceAssistant />
             <LanguageSelector />
             <Button variant="ghost" onClick={onSignOut} className="gap-2">
               <LogOut className="w-4 h-4" />

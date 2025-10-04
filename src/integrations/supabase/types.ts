@@ -14,7 +14,394 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          id: string
+          full_name: string | null
+          phone: string | null
+          village: string | null
+          district: string | null
+          state: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          full_name?: string | null
+          phone?: string | null
+          village?: string | null
+          district?: string | null
+          state?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          full_name?: string | null
+          phone?: string | null
+          village?: string | null
+          district?: string | null
+          state?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      farms: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          location: string
+          total_area_acres: number
+          soil_type: string | null
+          water_source: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          location: string
+          total_area_acres: number
+          soil_type?: string | null
+          water_source?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          location?: string
+          total_area_acres?: number
+          soil_type?: string | null
+          water_source?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      crop_records: {
+        Row: {
+          id: string
+          farm_id: string
+          user_id: string
+          crop_name: string
+          crop_type: string
+          area_acres: number
+          planting_date: string
+          expected_harvest_date: string | null
+          actual_harvest_date: string | null
+          expected_yield_kg: number | null
+          actual_yield_kg: number | null
+          status: string
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          farm_id: string
+          user_id: string
+          crop_name: string
+          crop_type: string
+          area_acres: number
+          planting_date: string
+          expected_harvest_date?: string | null
+          actual_harvest_date?: string | null
+          expected_yield_kg?: number | null
+          actual_yield_kg?: number | null
+          status?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          farm_id?: string
+          user_id?: string
+          crop_name?: string
+          crop_type?: string
+          area_acres?: number
+          planting_date?: string
+          expected_harvest_date?: string | null
+          actual_harvest_date?: string | null
+          expected_yield_kg?: number | null
+          actual_yield_kg?: number | null
+          status?: string
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      expenses: {
+        Row: {
+          id: string
+          farm_id: string
+          crop_record_id: string | null
+          user_id: string
+          expense_type: string
+          amount: number
+          description: string | null
+          expense_date: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          farm_id: string
+          crop_record_id?: string | null
+          user_id: string
+          expense_type: string
+          amount: number
+          description?: string | null
+          expense_date: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          farm_id?: string
+          crop_record_id?: string | null
+          user_id?: string
+          expense_type?: string
+          amount?: number
+          description?: string | null
+          expense_date?: string
+          created_at?: string
+        }
+      }
+      storage_facilities: {
+        Row: {
+          id: string
+          name: string
+          type: string
+          location: string
+          district: string
+          capacity_tonnes: number | null
+          contact_phone: string | null
+          facilities: string[] | null
+          latitude: number | null
+          longitude: number | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          type: string
+          location: string
+          district: string
+          capacity_tonnes?: number | null
+          contact_phone?: string | null
+          facilities?: string[] | null
+          latitude?: number | null
+          longitude?: number | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          type?: string
+          location?: string
+          district?: string
+          capacity_tonnes?: number | null
+          contact_phone?: string | null
+          facilities?: string[] | null
+          latitude?: number | null
+          longitude?: number | null
+          created_at?: string
+        }
+      }
+      crop_recommendations: {
+        Row: {
+          id: string
+          crop_name: string
+          best_season: string
+          suitable_soils: string[] | null
+          companion_crops: string[] | null
+          rotation_crops: string[] | null
+          planting_tips: string | null
+          care_instructions: string | null
+          avg_yield_per_acre: number | null
+          market_price_range: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          crop_name: string
+          best_season: string
+          suitable_soils?: string[] | null
+          companion_crops?: string[] | null
+          rotation_crops?: string[] | null
+          planting_tips?: string | null
+          care_instructions?: string | null
+          avg_yield_per_acre?: number | null
+          market_price_range?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          crop_name?: string
+          best_season?: string
+          suitable_soils?: string[] | null
+          companion_crops?: string[] | null
+          rotation_crops?: string[] | null
+          planting_tips?: string | null
+          care_instructions?: string | null
+          avg_yield_per_acre?: number | null
+          market_price_range?: string | null
+          created_at?: string
+        }
+      }
+      success_stories: {
+        Row: {
+          id: string
+          farmer_name: string
+          village: string
+          district: string
+          state: string
+          age: number | null
+          photo_url: string | null
+          story_title: string
+          story_content: string
+          crops_grown: string[]
+          land_size_acres: number | null
+          previous_yield_kg: number | null
+          current_yield_kg: number | null
+          yield_improvement_percentage: number | null
+          income_before: number | null
+          income_after: number | null
+          techniques_used: string[]
+          challenges_faced: string | null
+          solutions_implemented: string | null
+          advice_to_farmers: string | null
+          testimonial: string | null
+          is_featured: boolean
+          published_date: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          farmer_name: string
+          village: string
+          district: string
+          state?: string
+          age?: number | null
+          photo_url?: string | null
+          story_title: string
+          story_content: string
+          crops_grown: string[]
+          land_size_acres?: number | null
+          previous_yield_kg?: number | null
+          current_yield_kg?: number | null
+          yield_improvement_percentage?: number | null
+          income_before?: number | null
+          income_after?: number | null
+          techniques_used: string[]
+          challenges_faced?: string | null
+          solutions_implemented?: string | null
+          advice_to_farmers?: string | null
+          testimonial?: string | null
+          is_featured?: boolean
+          published_date?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          farmer_name?: string
+          village?: string
+          district?: string
+          state?: string
+          age?: number | null
+          photo_url?: string | null
+          story_title?: string
+          story_content?: string
+          crops_grown?: string[]
+          land_size_acres?: number | null
+          previous_yield_kg?: number | null
+          current_yield_kg?: number | null
+          yield_improvement_percentage?: number | null
+          income_before?: number | null
+          income_after?: number | null
+          techniques_used?: string[]
+          challenges_faced?: string | null
+          solutions_implemented?: string | null
+          advice_to_farmers?: string | null
+          testimonial?: string | null
+          is_featured?: boolean
+          published_date?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      farming_guides: {
+        Row: {
+          id: string
+          guide_title: string
+          guide_description: string
+          crop_name: string
+          category: string
+          difficulty_level: string
+          duration_days: number | null
+          best_season: string | null
+          thumbnail_url: string | null
+          video_url: string | null
+          steps: Json
+          tools_required: string[]
+          estimated_cost: number | null
+          expected_outcome: string | null
+          common_mistakes: string[]
+          expert_tips: string[]
+          is_featured: boolean
+          view_count: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          guide_title: string
+          guide_description: string
+          crop_name: string
+          category: string
+          difficulty_level?: string
+          duration_days?: number | null
+          best_season?: string | null
+          thumbnail_url?: string | null
+          video_url?: string | null
+          steps: Json
+          tools_required: string[]
+          estimated_cost?: number | null
+          expected_outcome?: string | null
+          common_mistakes: string[]
+          expert_tips: string[]
+          is_featured?: boolean
+          view_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          guide_title?: string
+          guide_description?: string
+          crop_name?: string
+          category?: string
+          difficulty_level?: string
+          duration_days?: number | null
+          best_season?: string | null
+          thumbnail_url?: string | null
+          video_url?: string | null
+          steps?: Json
+          tools_required?: string[]
+          estimated_cost?: number | null
+          expected_outcome?: string | null
+          common_mistakes?: string[]
+          expert_tips?: string[]
+          is_featured?: boolean
+          view_count?: number
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
